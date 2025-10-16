@@ -18,7 +18,6 @@ Kueue provides advanced job scheduling and resource management capabilities for 
 **Who can use it?**
 
 Any Giant Swarm customer who needs advanced job scheduling, resource quotas, and workload prioritization in their Kubernetes clusters.
-
 ## Installing
 
 There are several ways to install this app onto a workload cluster.
