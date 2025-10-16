@@ -1,0 +1,21 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - git:
+      commitTitle: 'Preemption: commonize code for checking if candidates satisfy
+        preemption policy (#7269)...'
+      sha: a02abfed9173e74dcf5fc074e68d8d0cb7e6a09f
+      tags:
+      - v0.15.0-devel-75-ga02abfed9
+    path: .
+  path: helm/kueue
+- contents:
+  - git:
+      commitTitle: 'Preemption: commonize code for checking if candidates satisfy
+        preemption policy (#7269)...'
+      sha: a02abfed9173e74dcf5fc074e68d8d0cb7e6a09f
+      tags:
+      - v0.15.0-devel-75-ga02abfed9
+    path: .
+  path: upstream
+kind: LockConfig

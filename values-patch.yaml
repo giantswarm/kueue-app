@@ -1,0 +1,7 @@
+# Add any other Giant Swarm specific configurations here
+# These values will be merged with the upstream values.yaml after sync
+controllerManager:
+  manager:
+    image:
+      repository: gsoci.azurecr.io/giantswarm/kueue
+      tag: ""
