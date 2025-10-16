@@ -35,12 +35,12 @@ Common labels
 */}}
 {{- define "kueue.labels" -}}
 helm.sh/chart: {{ include "kueue.chart" . }}
+application.giantswarm.io/team: planeteers
 {{ include "kueue.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
-application.giantswarm.io/team: planeteers
 {{- end }}
 
 {{/*
