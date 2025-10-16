@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.0] - 2025-10-16
 
+### Added
+
+- Upstream version
 - changed: `app.giantswarm.io` label group was changed to `application.giantswarm.io`
 
 [Unreleased]: https://github.com/giantswarm/kueue-app/compare/v0.1.0...HEAD
