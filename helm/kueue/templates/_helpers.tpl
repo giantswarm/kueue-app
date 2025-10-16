@@ -40,6 +40,7 @@ helm.sh/chart: {{ include "kueue.chart" . }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+application.giantswarm.io/team: planeteers
 {{- end }}
 
 {{/*
