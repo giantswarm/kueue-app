@@ -1,0 +1,36 @@
+apiVersion: vendir.k14s.io/v1alpha1
+kind: Config
+
+# Minimum required vendir version
+minimumRequiredVersion: 0.43.0
+
+directories:
+- # Sync directly to helm/kueue directory, preserving Giant Swarm customizations
+  path: helm/kueue
+  contents:
+  - path: .
+    # Fetch from the official Kueue repository
+    git:
+      url: https://github.com/kubernetes-sigs/kueue
+      ref: origin/main
+      # Use semantic versioning to get stable releases
+      refSelection:
+        semver:
+          constraints: ">=0.14.0"
+          # Include release candidates and beta versions
+          prereleases:
+            identifiers: [rc, beta]
+    # Only include the Helm chart directory
+    includePaths:
+    - charts/kueue/**/*
+    # Exclude files we want to keep our customizations for
+    excludePaths:
+    - charts/kueue/.helmignore
+    - charts/kueue/README.md
+    - charts/kueue/values.yaml
+    - charts/kueue/Chart.yaml
+    - charts/kueue/values.schema.json  # Preserve our custom schema
+    # Make the chart directory the new root
+    newRootPath: charts/kueue
+    # Set appropriate permissions
+    permissions: 0755
