@@ -12,14 +12,8 @@ directories:
     # Fetch from the official Kueue repository
     git:
       url: https://github.com/kubernetes-sigs/kueue
-      ref: origin/main
-      # Use semantic versioning to get stable releases
-      refSelection:
-        semver:
-          constraints: ">=0.14.0"
-          # Include release candidates and beta versions
-          prereleases:
-            identifiers: [rc, beta]
+      # Pinned to a specific upstream tag; bump this ref to upgrade.
+      ref: v0.17.3
     # Only include the Helm chart directory
     includePaths:
     - charts/kueue/**/*
@@ -33,4 +27,18 @@ directories:
     # Make the chart directory the new root
     newRootPath: charts/kueue
     # Set appropriate permissions
+    permissions: 0755
+- # Vendor a pristine copy of the upstream chart + docs for comparison.
+  path: upstream
+  contents:
+  - path: .
+    git:
+      url: https://github.com/kubernetes-sigs/kueue
+      ref: v0.17.3
+    includePaths:
+    - charts/kueue/**/*
+    - docs/**/*
+    - CHANGELOG/**/*
+    - LICENSE
+    - README.md
     permissions: 0755

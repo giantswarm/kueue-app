@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-05-18
+
+### Changed
+
+- Bump upstream Kueue chart from `v0.14.1` to `v0.17.3`.
+- Switch `managerConfig` to `config.kueue.x-k8s.io/v1beta2`.
+- Add `ray.io/rayservice` to the default integration frameworks.
+- Add `certManager.issuerRef` to allow reusing an existing cert-manager `Issuer`/`ClusterIssuer`.
+- Add `controllerManager.manager.logLevel` for zap log verbosity.
+- Add KueueViz backend `auth` (TokenReview mode), resource/securityContext defaults, and `ingress.enabled` toggle on both backend and frontend.
+- KueueViz backend now defaults `KUEUEVIZ_ALLOWED_ORIGINS` to `https://frontend.kueueviz.local`.
+
+### Added
+
+- New RBAC roles for leaderworkerset, rayservice, sparkapplication, clusterprofiles editor/viewer.
+- New `visibility/apiservice_v1beta2.yaml` template.
+- New `certmanager/issuer.yaml` and `kueueviz/frontend-configmap.yaml` templates.
+- Pinned the upstream ref in `vendir.yml` to a specific tag for reproducible syncs.
+
 ## [0.1.1] - 2026-02-04
 
 ### Changed
@@ -26,7 +45,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Upstream version
 - changed: `app.giantswarm.io` label group was changed to `application.giantswarm.io`
 
-[Unreleased]: https://github.com/giantswarm/kueue-app/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/giantswarm/kueue-app/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/giantswarm/kueue-app/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/giantswarm/kueue-app/compare/v0.1.1...v0.1.1
 [0.1.1]: https://github.com/giantswarm/kueue-app/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/giantswarm/kueue-app/releases/tag/v0.1.0
