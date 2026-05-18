@@ -9,8 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.2.0] - 2026-05-18
 
-## [0.2.0] - 2026-05-18
-
 ### Changed
 
 - Bump upstream Kueue chart from `v0.14.1` to `v0.17.3`.
