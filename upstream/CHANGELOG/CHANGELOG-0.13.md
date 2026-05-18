@@ -1,3 +1,105 @@
+## v0.13.10
+
+Changes since `v0.13.9`:
+
+## Changes by Kind
+
+### Bug or Regression
+
+- AdmissionFairSharing: Fix the bug that occasionally a workload may get admitted from a busy LocalQueue,
+  bypassing the entry penalties. (#7916, @IrvingMg)
+- Fix a bug that an error during workload preemption could leave the scheduler stuck without retrying. (#7817, @olekzabl)
+- Fix a bug that the cohort client-go lib is for a Namespaced resource, even though the cohort is a Cluster-scoped resource. (#7801, @tenzen-y)
+- Fix integration of `manageJobWithoutQueueName` and `managedJobsNamespaceSelector` with JobSet by ensuring that jobSets without a queue are  not managed by Kueue if are not selected by the  `managedJobsNamespaceSelector`. (#7761, @MaysaMacedo)
+- Fix issue #6711 where an inactive workload could transiently get admitted into a queue. (#7944, @olekzabl)
+- Fix the bug that the kubernetes.io/job-name label was not propagated from the k8s Job to the PodTemplate in
+  the Workload object, and later to the pod template in the ProvisioningRequest.
+
+  As a consequence the ClusterAutoscaler could not properly resolve pod affinities referring to that label,
+  via podAffinity.requiredDuringSchedulingIgnoredDuringExecution.labelSelector. For example,
+  such pod affinities can be used to request ClusterAutoscaler to provision a single node which is large enough
+  to accommodate all Pods on a single Node.
+
+  We also introduce the PropagateBatchJobLabelsToWorkload feature gate to disable the new behavior in case of
+  complications. (#7613, @yaroslava-serdiuk)
+- TAS: Fix the `requiredDuringSchedulingIgnoredDuringExecution` node affinity setting being ignored in topology-aware scheduling. (#7936, @kshalot)
+
+## v0.13.9
+
+Changes since `v0.13.8`:
+
+## Changes by Kind
+
+### Feature
+
+- `ReclaimablePods` feature gate is introduced to enable users switching on and off the reclaimable Pods feature (#7536, @PBundyra)
+
+### Bug or Regression
+
+- Fix eviction of jobs with memory requests in decimal format (#7557, @brejman)
+- Fix the bug for the StatefulSet integration that the scale up could get stuck if
+  triggered immediately after scale down to zero. (#7499, @IrvingMg)
+- MultiKueue: Remove remoteClient from clusterReconciler when kubeconfig is detected as invalid or insecure, preventing workloads from being admitted to misconfigured clusters. (#7516, @mszadkow)
+
+## v0.13.8
+
+Changes since `v0.13.7`:
+
+## Urgent Upgrade Notes
+
+### (No, really, you MUST read this before you upgrade)
+
+- MultiKueue: validate remote client kubeconfigs and reject insecure kubeconfigs by default; add feature gate MultiKueueAllowInsecureKubeconfigs to temporarily allow insecure kubeconfigs until v0.17.0.
+
+  if you are using MultiKueue kubeconfigs which are not passing the new validation please
+  enable the `MultiKueueAllowInsecureKubeconfigs` feature gate and let us know so that we can re-consider
+  the deprecation plans for the feature gate. (#7453, @mszadkow)
+
+## Changes by Kind
+
+### Bug or Regression
+
+- Fix a bug where a workload would not get requeued after eviction due to failed hotswap. (#7380, @pajakd)
+- Fix the kueue-controller-manager startup failures.
+
+  This fixed the Kueue CrashLoopBackOff due to the log message: "Unable to setup indexes","error":"could not setup multikueue indexer: setting index on workloads admission checks: indexer conflict. (#7441, @IrvingMg)
+- Fixed the bug that prevented managing workloads with duplicated environment variable names in containers. This issue manifested when creating the Workload via the API. (#7442, @mbobrovskyi)
+- Services: fix the setting of the `app.kubernetes.io/component` label to discriminate between different service components within Kueue as follows:
+    - controller-manager-metrics-service for kueue-controller-manager-metrics-service
+    - visibility-service for kueue-visibility-server
+    - webhook-service for kueue-webhook-service (#7451, @rphillips)
+- TAS: Increase the number of Topology levels limitations for localqueue and workloads to 16 (#7428, @kannon92)
+
+## v0.13.7
+
+Changes since `v0.13.6`:
+
+## Changes by Kind
+
+### Feature
+
+- JobFramework: Introduce an optional interface for custom Jobs, called JobWithCustomWorkloadActivation, which can be used to deactivate or active a custom CRD workload. (#7199, @tg123)
+
+### Bug or Regression
+
+- Fix existing workloads not being re-evaluated when new clusters are added to MultiKueueConfig. Previously, only newly created workloads would see updated cluster lists. (#7351, @mimowo)
+- Fix handling of RayJobs which specify the spec.clusterSelector and the "queue-name" label for Kueue. These jobs should be ignored by kueue as they are being submitted to a RayCluster which is where the resources are being used and was likely already admitted by kueue. No need to double admit.
+  Fix on a panic on kueue managed jobs if spec.rayClusterSpec wasn't specified. (#7257, @laurafitzgerald)
+- Fixed a bug that Kueue would keep sending empty updates to a Workload, along with sending the "UpdatedWorkload" event, even if the Workload didn't change. This would happen for Workloads using any other mechanism for setting
+  the priority than the WorkloadPriorityClass, eg. for Workloads for PodGroups. (#7306, @mbobrovskyi)
+- MultiKueue x ElasticJobs: fix webhook validation bug which prevented scale up operation when any other
+  than the default "AllAtOnce" MultiKueue dispatcher was used. (#7333, @mszadkow)
+- Visibility API: Fix a bug that the Config clientConnection is not respected in the visibility server. (#7224, @tenzen-y)
+
+### Other (Cleanup or Flake)
+
+- Improve the messages presented to the user in scheduling events, by clarifying the reason for "insufficient quota"
+  in case of workloads with multiple PodSets. 
+  
+  Example:
+  - before: "insufficient quota for resource-type in flavor example-flavor, request > maximum capacity (24 > 16)"
+  - after: "insufficient quota for resource-type in flavor example-flavor, previously considered podsets requests (16) + current podset request (8) > maximum capacity (16)" (#7294, @iomarsayed)
+
 ## v0.13.6
 
 Changes since `v0.13.5`:
