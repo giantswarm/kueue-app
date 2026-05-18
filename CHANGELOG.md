@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Bump upstream Kueue chart from `v0.14.1` to `v0.17.3`.
+- Default `enableCertManager` to `true` so Giant Swarm clusters use the
+  cert-manager that ships in the standard workload-cluster bundle without any
+  user configuration. Set to `false` on clusters without cert-manager.
+- Set `internalCertManagement.enable: false` automatically when
+  `enableCertManager: true` so the visibility server consumes the
+  cert-manager-issued certs instead of trying to self-sign into the read-only
+  secret mount (refs kubernetes-sigs/kueue#11133).
 - Switch `managerConfig` to `config.kueue.x-k8s.io/v1beta2`.
 - Add `ray.io/rayservice` to the default integration frameworks.
 - Add `certManager.issuerRef` to allow reusing an existing cert-manager `Issuer`/`ClusterIssuer`.
