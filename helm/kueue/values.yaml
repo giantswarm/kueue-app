@@ -8,8 +8,11 @@ nameOverride: ""
 fullnameOverride: ""
 # -- Enable Prometheus
 enablePrometheus: false
-# -- Enable x509 automated certificate management using cert-manager (cert-manager.io)
-enableCertManager: false
+# -- Enable x509 automated certificate management using cert-manager (cert-manager.io).
+# Defaults to true on Giant Swarm because cert-manager is part of the standard
+# workload-cluster bundle. Set to false on clusters that do not run cert-manager;
+# Kueue will fall back to its built-in self-signed cert management.
+enableCertManager: true
 certManager:
   # -- Override the default self-signed cert-manager issuer reference. When set, the chart skips creating its own Issuer and uses this reference for webhook, metrics, and visibility certificates. The referenced issuer must provide the CA data required by Kueue's cert-manager integration.
   issuerRef: {}
