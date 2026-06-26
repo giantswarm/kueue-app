@@ -2,18 +2,18 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Prepare release v0.17.3 (#11233)
-      sha: 3753b2981c8909e1cd077821f242778b81760481
+      commitTitle: Prepare release v0.18.2 (#12558)
+      sha: 444058af81a08235306ef2a43581692289cd4822
       tags:
-      - v0.17.3
+      - v0.18.2
     path: .
   path: helm/kueue
 - contents:
   - git:
-      commitTitle: Prepare release v0.17.3 (#11233)
-      sha: 3753b2981c8909e1cd077821f242778b81760481
+      commitTitle: Prepare release v0.18.2 (#12558)
+      sha: 444058af81a08235306ef2a43581692289cd4822
       tags:
-      - v0.17.3
+      - v0.18.2
     path: .
   path: upstream
 kind: LockConfig

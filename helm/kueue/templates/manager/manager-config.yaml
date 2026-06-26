@@ -32,12 +32,5 @@ data:
   {{- if not $config.internalCertManagement }}
     {{- $_ := set $config "internalCertManagement" $defaultInternalCert }}
   {{- end }}
-{{- else }}
-  {{- /* cert-manager is providing certs at the mounted secret volumes. Disable
-         kueue's internal cert management so the visibility server does not try
-         to self-sign into the read-only mount. See kubernetes-sigs/kueue#11133. */}}
-  {{- if not $config.internalCertManagement }}
-    {{- $_ := set $config "internalCertManagement" (dict "enable" false) }}
-  {{- end }}
 {{- end }}
 {{ $config | toYaml | indent 4 }}
