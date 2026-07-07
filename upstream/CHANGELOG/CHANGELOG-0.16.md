@@ -1,3 +1,132 @@
+## v0.16.8
+
+Changes since `v0.16.7`:
+
+## Actions Required Before Upgrading
+
+### (No, really, you MUST read this before you upgrade)
+
+- **Minor releases:** Review the `.0` release notes for each new minor version you cross; see: [`v0.15.0`](https://github.com/kubernetes-sigs/kueue/releases/tag/v0.15.0), [`v0.16.0`](https://github.com/kubernetes-sigs/kueue/releases/tag/v0.16.0).
+- **Patch releases:** Review the patch release notes leading up to this version, but *only* within this minor release line; see: [`v0.16.1`](https://github.com/kubernetes-sigs/kueue/releases/tag/v0.16.1), [`v0.16.2`](https://github.com/kubernetes-sigs/kueue/releases/tag/v0.16.2), [`v0.16.3`](https://github.com/kubernetes-sigs/kueue/releases/tag/v0.16.3), [`v0.16.4`](https://github.com/kubernetes-sigs/kueue/releases/tag/v0.16.4), [`v0.16.5`](https://github.com/kubernetes-sigs/kueue/releases/tag/v0.16.5), [`v0.16.6`](https://github.com/kubernetes-sigs/kueue/releases/tag/v0.16.6), [`v0.16.7`](https://github.com/kubernetes-sigs/kueue/releases/tag/v0.16.7).
+
+## Changes by Kind
+
+### Feature
+
+- Observability: Improved FairSharing strategy-evaluation logs by including DRS share values and emitting them at verbosity level V(4). (#11186, @PBundyra)
+
+### Bug or Regression
+
+- ElasticJobsViaWorkloadSlices: Fixed a bug where workload slices with identical creation timestamps could be incorrectly sorted, potentially leading to quota leaks during scale-up. (#11200, @KumarADITHYA123)
+- Fixed a regression where Kueue could mark newly created Workloads as finished, potentially blocking queues. The FinishOrphanedWorkloads feature gate has been downgraded to Alpha. (#11019, @mbobrovskyi)
+- Fixed multi-arch image builds for importer, kueue-populator, and kueueviz backend images so runtime images
+  and binaries are built for the target platform, preventing wrong-architecture containers and exec format error
+  for non-amd64 target platforms, such as arm64, ppc64le, and s390x. (#10915, @carterpewpew)
+- Fixed vulnerability where two podsets with total requests exceeding max int64 would lead to integer overflow and break quota limits. (#11151, @pajakd)
+- Helm: Fixed manager probe templates so periodSeconds correctly uses the configured periodSeconds value,
+  rather than initialDelaySeconds. (#10982, @cixuuz)
+- Helm: Fixed the FlowSchema priorityLevelConfiguration reference to use the Helm fullname template, preventing APF configuration from breaking when fullnameOverride or nameOverride is set. (#10981, @cixuuz)
+- KueueViz: Fixed RBAC permissions for WorkloadPriorityClass objects by using the correct plural workloadpriorityclasses resource name. (#10985, @cixuuz)
+- KueueViz: Fixed the LocalQueue details page to show only workloads from the selected queue. (#11213, @ManthanNimodiya)
+- LeaderWorkerSet & StatefulSet: Fixed a race condition bug that could occasionally result in reverting, at the level of the Workload object, manual changes to the queue-name label for LeaderWorkerSet and StatefulSet. (#11194, @mbobrovskyi)
+- Scheduling: Fixed a bug where in-flight workloads that were concurrently marked as finished (`Finished=True`) or deactivated could be requeued by Kueue's scheduler, causing re-scheduling attempts which were interfering with the scheduling of other workloads. (#11021, @mbobrovskyi)
+- TAS: Fixed NodeHotSwap with TASReplaceNodeOnNodeTaints enabled to evaluate node taints using effective Workload tolerations, including tolerations from AdmissionCheck PodSetUpdates. (#11227, @Ladicle)
+- TAS: Fixed a bug where multi-resource workloads, such as workloads requesting both CPU and memory,
+  could fail admission during second-pass scheduling for ProvisioningRequests or NodeHotSwap because one
+  resource's usage was double-counted against quota. (#11040, @cvgenesis)
+- TAS: Fixed cache cleanup for non-TAS Pods that reach a terminal phase without Kueue observing the expected status update, preventing stale Pod usage from remaining in the TAS cache. (#11145, @amy)
+- TAS: optimize performance of building the snapshot by pre-aggregating the node usage coming from non-TAS Pods. (#11074, @jzhaojieh)
+
+## v0.16.7
+
+Changes since `v0.16.6`:
+
+## Changes by Kind
+
+### Bug or Regression
+
+- FailureRecovery: Forcefully delete pods that are Failed/Succeeded and scheduled on unreachable nodes.
+  This unblocks cases like a JobSet deleting a Job with foreground cascade being stuck because a pod in a terminal phase exists on one of the unhealthy nodes. (#10855, @kshalot)
+- Fix a race-condition bug that a deleted ClusterQueue may be kept by a finalizer, even after deletion of all workloads and LQs. (#10834, @ShaanveerS)
+- Fixed a bug in Kueue's cache that could leave stale SubtreeQuota values in ancestor cohorts after a child Cohort
+  was deleted, leading to potential over-admission of workloads and incorrect metrics reporting. (#10842, @mbobrovskyi)
+- Fixed a bug where admitted Workloads could fail to patch through the v1beta1 API due to CEL validation of the `priorityClassSource` immutability rule. (#10630, @kannon92)
+- Observability: downgrade the non-compatible flavor error logs to Info level (v3). (#10638, @maishivamhoo123)
+- TAS: Fix a bug where admitted workloads with unhealthy nodes were not evicted when an AdmissionCheck entered Retry or when the PodsReady recovery timeout was exceeded. (#10693, @pajakd)
+- TAS: Fix handling of PodSet groups which could lead in some scenarios to empty topologyAssignment. (#10857, @mimowo)
+- TAS: Fix nil pointer panic in TAS node reconciler when unadmitted workloads exist in the cluster. (#10674, @j-skiba)
+- TAS: Refine the NodeHotSwap logic to ensure that UnhealthyNodes are only updated for workloads currently assigned to a Node via a topology topology assignment. This prevents "late pods" from stale topologies from triggering inaccurate health reporting. (#10838, @j-skiba)
+- VisibilityOnDemand: Fixed a bug in the visibility endpoint, that listing workloads from a local queue includes
+  workloads from other LocalQueues in different namespaces, if the other LocalQueues have the same name. (#10678, @mbobrovskyi)
+
+## v0.16.6
+
+Changes since `v0.16.5`:
+
+## Urgent Upgrade Notes
+
+### (No, really, you MUST read this before you upgrade)
+
+- AdmissionChecks: Add the alpha `RejectUpdatesToCQWithInvalidOnFlavors` feature gate (disabled by default) to reject updates to existing ClusterQueues with invalid `AdmissionCheckStrategy.OnFlavors` references.
+  when enabling this feature gate, fix any existing invalid `OnFlavors` references before updating the affected ClusterQueues. (#10511, @tenzen-y)
+
+## Changes by Kind
+
+### Bug or Regression
+
+- AdmissionChecks: ClusterQueue validation now checks that the flavors specified in `AdmissionCheckStrategy.OnFlavors` are listed in quota. (#10378, @ShaanveerS)
+- AdmissionChecks: fix the bug that on backoff admission checks which are spanning all ResourceFlavors, such as MultiKueue, may be missing in the Workload’s status.
+
+  For MultiKueue that manifested with a bug, when aside from the MultiKueue admission check there was another non-MultiKueue admission check. In the scenario when eviction on the management cluster happened the manager that had temporarily lost connection to a worker, the remote workload would keep running on the reconnected worker, despite the workload staying without reservation on the manager cluster. (#9359, @Singularity23x0)
+- AdmissionFairSharing: Fixed a bug in entry penalties by reducing them when workload is admitted and also clearing them up if all the resources on the admission entry penalty have value zero. (#10465, @MaysaMacedo)
+- ElasticJobs: Fix a bug where pods stay gated after scale-up by allowing finished workloads to ungate their own pods. (#10392, @sohankunkerkar)
+- FailureRecoveryPolicy: Fixed an issue where pods could remain stuck terminating if their node became unreachable only after the force-termination timeout had already elapsed. (#10501, @kshalot)
+- Fix handling of orphaned workloads which could result in the accumulation of stale workloads
+  after PodsReady timeout eviction for Deployment-owned pods. (#10274, @sebest)
+- LeaderWorkerSet integration: fix the bug that the PodTemplate metadata wasn't propagated to the Workload's PodSets. (#10444, @pajakd)
+- MultiKueue: Fixes the bug where a job, after being dispatched to a worker, would not sync correctly after being evicted there. This would also cause its workload to be incorrectly labeled as admitted.
+
+  Now the workload and the manager job instance will correctly reflect the evicted state and MultiKueue will perform a fallback, then dispatch remote workloads to all eligible workers again after being evicted from the Worker it was successfully admitted to before. An example of such a case is if the remote instance got preempted on the worker. (#9670, @Singularity23x0)
+- MultiKueue: fix the bug that when custom admission checks are configured on the manager cluster, other than
+  the MultiKueue admission check, then the Job may start running on the selected worker before the other admission
+  checks are satisfied (Ready). We fix the issue by deferring the dispatching of workload until all non-MultiKueue AdmissionChecks become Ready. (#10405, @mszadkow)
+- Observability: Fix excessive memory overhead in hot code paths by reusing the named logger in NewLogConstructor and avoiding unnecessary logger cloning. (#10394, @MatteoFari)
+- TAS: Fix empty slices for count=0 podSets causing infinite scheduling loop (#10510, @mimowo)
+- TAS: fix a bug that Pods which only contain the `kueue.x-k8s.io/podset-slice-required-topology` as the TAS annotation are not ungated. (#10445, @tg123)
+- TAS: reduce the churn on the TAS-enabled controller, called NonTasUsageReconciler, by skipping triggering
+  of the Reconcile on Pod changes which are irrelevant from the controller point-of-view. (#10507, @MatteoFari)
+
+## v0.16.5
+
+Changes since `v0.16.4`:
+
+## Changes by Kind
+
+### Feature
+
+- Helm: Add kueueViz.backend.ingress.enabled and kueueViz.frontend.ingress.enabled Helm values to allow disabling KueueViz ingress resources. (#10065, @david-gang)
+- Helm: Add support to pass in custom issuerRef to allow for configuration of Issuers. (#10212, @MatteoFari)
+- Introduced the `WorkloadNameShorten` feature gate to ensure generated Workload names do not exceed 63 characters. This prevents issues where Workload labels were invalid due to length. When enabled, the owner-based prefix is truncated to fit within the limit while maintaining uniqueness via a hash suffix. (#10129, @mbobrovskyi)
+
+### Bug or Regression
+
+- FairSharing: Fix `FairSharingPrioritizeNonBorrowing` to check per-flavor borrowing at every hierarchy level in hierarchical cohorts, not just at the ClusterQueue level. (#10203, @mukund-wayve)
+- RayJob integration: fix the autosaling scenarios when using ElasticJobsViaWorkloadSlices. In particular when
+  two consecutive scale ups happen. (#10160, @hiboyang)
+- Scheduling: fix the bug that scheduler could get stuck trying to preempt a workload due to the corruption of the
+  in-memory state tracking the pending preemptions (called preemptionExpectations). (#10206, @mimowo)
+- Strip managedFields from informer cache via DefaultTransform to reduce memory footprint on large clusters. (#10125, @jzhaojieh)
+- TAS: Fix a bug where preemption with multiple resources sometimes fails (#10204, @mimowo)
+- TAS: Fix nil pointer panic in TAS node reconciler when unadmitted workloads exist in the cluster. (#10039, @kannon92)
+- TAS: Improved the performance of the node_controller Reconcile loop by introducing a new field indexer for Workloads. (#10051, @j-skiba)
+- TAS: Workloads that require TAS but have a PodSet with a failed TAS request (e.g., more than one flavor assigned) are correctly rejected at admission with a clear Pending reason and message, rather than being admitted without TopologyAssignment. (#10228, @j-skiba)
+- TAS: fix the bug that workloads which only specify resource limits, without requests, are not able to perform 
+  the second-pass scheduling correctly, after Kueue restart, responsible for NodeHotSwap and ProvisioningRequests. (#10177, @mimowo)
+
+### Other (Cleanup or Flake)
+
+- Observability: Increased log level from 3 to 5 for TAS node filtering-related log events. (#10021, @mwysokin)
+
 ## v0.16.4
 
 Changes since `v0.16.3`:
