@@ -1,0 +1,15 @@
+# kube-linter config for app-build-suite (auto-discovered at the chart root).
+#
+# Upstream Kueue v0.18.2 stopped declaring the health-probe port (8081) as a
+# containerPort on the controller-manager, while its liveness/readiness probes
+# still HTTPGet against 8081 (see templates/manager/manager.yaml). A declared
+# containerPort is informational only -- the probes work at runtime regardless --
+# but kube-linter's liveness-port / readiness-port checks fail on the mismatch.
+#
+# The templates are vendored from upstream (see vendir.yml) and must not be hand
+# edited, so we exclude these two checks here instead. All other default
+# kube-linter checks remain active.
+checks:
+  exclude:
+  - "liveness-port"
+  - "readiness-port"
