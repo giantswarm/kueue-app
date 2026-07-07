@@ -1,0 +1,15 @@
+---
+apiVersion: application.giantswarm.io/v1alpha1
+kind: App
+metadata:
+  labels:
+    giantswarm.io/cluster: fer-ia-conformance
+  name: kueue
+  namespace: org-fer
+spec:
+  catalog: giantswarm
+  kubeConfig:
+    inCluster: false
+  name: kueue
+  namespace: kueue-system
+  version: 0.1.0-0b7e2d8c48a01b125e857830ccf994fb5f7cda43

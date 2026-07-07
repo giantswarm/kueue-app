@@ -4,9 +4,20 @@ kind: Config
 # Minimum required vendir version
 minimumRequiredVersion: 0.43.0
 
+# IMPORTANT: vendir OWNS every directory listed under `path:` -- on each sync it
+# wipes and repopulates that directory, deleting anything not fetched from
+# upstream. `excludePaths` only stops upstream files from being *copied in*; it
+# does NOT preserve locally committed files. So we must never point vendir at
+# helm/kueue itself, because that directory also holds Giant Swarm's
+# hand-maintained files (Chart.yaml, values.yaml, OWNERS, values.schema.json,
+# README.md.gotmpl). Instead we point vendir only at the subdirectories that are
+# genuinely regenerated from upstream (templates, tests). The GS-maintained
+# files live in helm/kueue/ outside any managed path, so a sync can never wipe
+# them. Run ./sync-upstream.sh after a bump -- it flags new upstream top-level
+# files that may need wiring in here.
 directories:
-- # Sync directly to helm/kueue directory, preserving Giant Swarm customizations
-  path: helm/kueue
+- # Upstream chart templates (CRDs live under templates/crd).
+  path: helm/kueue/templates
   contents:
   - path: .
     # Fetch from the official Kueue repository
@@ -14,21 +25,24 @@ directories:
       url: https://github.com/kubernetes-sigs/kueue
       # Pinned to a specific upstream tag; bump this ref to upgrade.
       ref: v0.18.2
-    # Only include the Helm chart directory
     includePaths:
-    - charts/kueue/**/*
-    # Exclude files we want to keep our customizations for
-    excludePaths:
-    - charts/kueue/.helmignore
-    - charts/kueue/README.md
-    - charts/kueue/values.yaml
-    - charts/kueue/Chart.yaml
-    - charts/kueue/values.schema.json  # Preserve our custom schema
-    # Make the chart directory the new root
-    newRootPath: charts/kueue
-    # Set appropriate permissions
+    - charts/kueue/templates/**/*
+    # Make the templates directory the new root
+    newRootPath: charts/kueue/templates
     permissions: 0755
-- # Vendor a pristine copy of the upstream chart + docs for comparison.
+- # Upstream chart helm-unittest tests.
+  path: helm/kueue/tests
+  contents:
+  - path: .
+    git:
+      url: https://github.com/kubernetes-sigs/kueue
+      ref: v0.18.2
+    includePaths:
+    - charts/kueue/tests/**/*
+    newRootPath: charts/kueue/tests
+    permissions: 0755
+- # Vendor a pristine copy of the upstream chart + docs for comparison and to
+  # detect new top-level chart files/dirs that may need wiring into the chart.
   path: upstream
   contents:
   - path: .
