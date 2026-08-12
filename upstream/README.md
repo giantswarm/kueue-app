@@ -1,11 +1,7 @@
 # Kueue
 
-[![GoReport Widget]][GoReport Status]
 [![Latest Release](https://img.shields.io/github/v/release/kubernetes-sigs/kueue?include_prereleases)](https://github.com/kubernetes-sigs/kueue/releases/latest)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/kubernetes-sigs/kueue)
-
-[GoReport Widget]: https://goreportcard.com/badge/sigs.k8s.io/kueue
-[GoReport Status]: https://goreportcard.com/report/sigs.k8s.io/kueue
 
 <img src="https://github.com/kubernetes-sigs/kueue/blob/main/site/static/images/logo.svg" width="100" alt="kueue logo">
 
@@ -14,7 +10,7 @@ Kueue is a set of APIs and controller for [job](https://kueue.sigs.k8s.io/docs/c
 a job should be [admitted](https://kueue.sigs.k8s.io/docs/concepts#admission) to start (as in pods can be
 created) and when it should stop (as in active pods should be deleted).
 
-Read the [overview](https://kueue.sigs.k8s.io/docs/overview/) and watch the Kueue-related [talks & presentations](https://kueue.sigs.k8s.io/docs/talks_and_presentations/) to learn more.
+Read the [overview](https://kueue.sigs.k8s.io/docs/overview/) and watch the Kueue-related [talks & presentations](https://kueue.sigs.k8s.io/community/talks_and_presentations/) to learn more.
 
 ## Features overview
 
@@ -37,26 +33,42 @@ Read the [overview](https://kueue.sigs.k8s.io/docs/overview/) and watch the Kueu
 - ✔️ Test coverage:
   - ✔️ Unit test [testgrid](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-unit-main).
   - ✔️ Integration tests:
-    - ✔️ Baseline suite [testgrid](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-integration-baseline-main).
-    - ✔️ Extended suite [testgrid](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-integration-extended-main).
+    - ✔️ Baseline suite 
+      - ✔️ [shard-0](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-integration-shard-0-main)
+      - ✔️ [shard-1](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-integration-shard-1-main)
+      - ✔️ [shard-2](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-integration-shard-2-main)
     - ✔️ MultiKueue suite [testgrid](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-integration-multikueue-main).
   - ✔️ E2E tests:
     - ✔️ Baseline suites for Kubernetes
-      [1.33](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-e2e-baseline-main-1-33),
-      [1.34](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-e2e-baseline-main-1-34),
+      [1.34](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-e2e-baseline-main-1-34)
       [1.35](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-e2e-baseline-main-1-35)
+      [1.36](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-e2e-baseline-main-1-36)
       on Kind.
-    - ✔️ Extended suites for Kubernetes
-      [1.33](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-e2e-extended-main-1-33),
-      [1.34](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-e2e-extended-main-1-34),
-      [1.35](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-e2e-extended-main-1-35)
-      on Kind.
+    - ✔️ Extended suites for Kubernetes on Kind:
+      - ✔️ 1.34:
+        - ✔️ [shard-0](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-e2e-extended-shard-0-main-1-34)
+        - ✔️ [shard-1](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-e2e-extended-shard-1-main-1-34)
+        - ✔️ [shard-2](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-e2e-extended-shard-2-main-1-34)
+      - ✔️ 1.35:
+        - ✔️ [shard-0](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-e2e-extended-shard-0-main-1-35)
+        - ✔️ [shard-1](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-e2e-extended-shard-1-main-1-35)
+        - ✔️ [shard-2](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-e2e-extended-shard-2-main-1-35)
+      - ✔️ 1.36:
+        - ✔️ [shard-0](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-e2e-extended-shard-0-main-1-36)
+        - ✔️ [shard-1](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-e2e-extended-shard-1-main-1-36)
+        - ✔️ [shard-2](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-e2e-extended-shard-2-main-1-36)
     - ✔️ TAS: 
       - ✔️ Baseline suite [testgrid](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-e2e-tas-baseline-main).
-      - ✔️ Extended suite [testgrid](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-e2e-tas-extended-main).
+      - ✔️ Extended suite: 
+        - ✔️ [shard-0](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-e2e-tas-extended-shard-0-main)
+        - ✔️ [shard-1](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-e2e-tas-extended-shard-1-main)
     - ✔️ Sequential tests: 
-      - ✔️ Baseline suites [testgrid](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-e2e-sequential-baseline-main).
-      - ✔️ Extended suites [testgrid](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-e2e-sequential-extended-main).
+      - ✔️ Baseline suites:
+        - ✔️ [shard-0](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-e2e-sequential-baseline-shard-0-main)
+        - ✔️ [shard-1](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-e2e-sequential-baseline-shard-1-main)
+      - ✔️ Extended suites:
+        - ✔️ [shard-0](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-e2e-sequential-extended-shard-0-main)
+        - ✔️ [shard-1](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-e2e-sequential-extended-shard-1-main)
     - ✔️ E2E Cert Manager test [testgrid](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-e2e-certmanager-main).
     - ✔️ DRA test [testgrid](https://testgrid.k8s.io/sig-scheduling#periodic-kueue-test-e2e-dra-main).
     - ✔️ MultiKueue:
@@ -73,7 +85,7 @@ Read the [overview](https://kueue.sigs.k8s.io/docs/overview/) and watch the Kueu
 - ✔️ Monitoring via [metrics](https://kueue.sigs.k8s.io/docs/reference/metrics).
 - ✔️ Security: RBAC based accessibility.
 - ✔️ Stable [release](RELEASE.md) cycle (2-3 months).
-- ✔️ [Adopters](https://kueue.sigs.k8s.io/docs/adopters/) running on production.
+- ✔️ [Adopters](https://kueue.sigs.k8s.io/community/adopters/) running on production.
 
   _Based on community feedback, we continue to simplify and evolve the API to
   address new use cases_.
@@ -85,7 +97,7 @@ Read the [overview](https://kueue.sigs.k8s.io/docs/overview/) and watch the Kueu
 To install the latest release of Kueue in your cluster, run the following command:
 
 ```shell
-kubectl apply --server-side -f https://github.com/kubernetes-sigs/kueue/releases/download/v0.18.2/manifests.yaml
+kubectl apply --server-side -f https://github.com/kubernetes-sigs/kueue/releases/download/v0.19.1/manifests.yaml
 ```
 
 The controller runs in the `kueue-system` namespace.

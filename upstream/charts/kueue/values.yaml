@@ -19,6 +19,8 @@ certManager:
   #   group: cert-manager.io
 # -- Enable API Priority and Fairness configuration for the visibility API
 enableVisibilityAPF: false
+# -- Enable the visibility server's auth-reader RoleBinding. It is always created in the kube-system namespace because it binds to the built-in extension-apiserver-authentication-reader Role, which only exists there. Disable when deploying under a GitOps project that cannot target kube-system, then create the RoleBinding out-of-band.
+enableVisibilityAuthReaderRoleBinding: true
 # -- Enable KueueViz dashboard
 enableKueueViz: false
 # -- Kubernetes cluster's domain
@@ -28,6 +30,15 @@ controllerManager:
   featureGates: []
   #  - name: PartialAdmission
   #    enabled: true
+  # -- ControllerManager Deployment's update strategy. When hostNetwork is enabled the
+  # manager's ports bind to the node, so the default RollingUpdate surge cannot schedule
+  # a second pod onto an already-occupied node; set maxSurge: 0 to roll in place.
+  strategy: {}
+  # -- Run the ControllerManager pod on the host network. Needed where the API server
+  # reaches the webhook/visibility endpoints via node IPs rather than pod IPs.
+  hostNetwork: false
+  # -- ControllerManager pod's dnsPolicy. Set to ClusterFirstWithHostNet when hostNetwork is enabled.
+  dnsPolicy: ""
   manager:
     # -- ControllerManager's pod priorityClassName
     priorityClassName:
@@ -35,7 +46,7 @@ controllerManager:
       # -- ControllerManager's image repository
       repository: us-central1-docker.pkg.dev/k8s-staging-images/kueue/kueue
       # -- ControllerManager's image tag
-      tag: release-0.18
+      tag: release-0.19
       # -- ControllerManager's image pullPolicy.
       # This should be set to 'IfNotPresent' for released version
       pullPolicy: Always
@@ -120,13 +131,13 @@ managerConfig:
       groupKindConcurrency:
         Job.batch: 5
         Pod: 5
-        Workload.kueue.x-k8s.io: 5
-        LocalQueue.kueue.x-k8s.io: 1
-        ClusterQueue.kueue.x-k8s.io: 1
+        Workload.kueue.x-k8s.io: 10
+        LocalQueue.kueue.x-k8s.io: 5
+        ClusterQueue.kueue.x-k8s.io: 5
         ResourceFlavor.kueue.x-k8s.io: 1
     clientConnection:
-      qps: 50
-      burst: 100
+      qps: 300
+      burst: 500
     #pprofBindAddress: :8083
     #waitForPodsReady:
     #  timeout: 5m
@@ -157,13 +168,13 @@ managerConfig:
       - "ray.io/rayservice"
       - "ray.io/raycluster"
       - "jobset.x-k8s.io/jobset"
-      - "trainer.kubeflow.org/trainjob"
-      - "kubeflow.org/paddlejob"
-      - "kubeflow.org/pytorchjob"
-      - "kubeflow.org/tfjob"
-      - "kubeflow.org/xgboostjob"
-      - "kubeflow.org/jaxjob"
+    #  - "kubeflow.org/paddlejob"
+    #  - "kubeflow.org/pytorchjob"
+    #  - "kubeflow.org/tfjob"
+    #  - "kubeflow.org/xgboostjob"
+    #  - "kubeflow.org/jaxjob"
       - "workload.codeflare.dev/appwrapper"
+      - "trainer.kubeflow.org/trainjob"
     #  - "sparkoperator.k8s.io/sparkapplication"
       - "pod"
       - "deployment"
@@ -270,6 +281,8 @@ kueueViz:
       ingressClassName:
       # -- KueueViz dashboard backend ingress host
       host: "backend.kueueviz.local"
+      # -- If true, enable KueueViz dashboard backend ingress tls. Defaults to true if tlsSecretName is set.
+      tlsEnabled: ~
       # -- KueueViz dashboard backend ingress tls secret name
       tlsSecretName: "kueueviz-backend-tls"
     auth:
@@ -287,7 +300,7 @@ kueueViz:
       # -- KueueViz dashboard backend image repository
       repository: "us-central1-docker.pkg.dev/k8s-staging-images/kueue/kueueviz-backend"
       # -- KueueViz dashboard backend image tag
-      tag: release-0.18
+      tag: release-0.19
       # -- KueueViz dashboard backend image pullPolicy.
       # This should be set to 'IfNotPresent' for released version
       pullPolicy: Always
@@ -310,9 +323,18 @@ kueueViz:
         cpu: 500m
         memory: 512Mi
     # -- KueueViz frontend pod securityContext
-    podSecurityContext: {}
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      seccompProfile:
+        type: RuntimeDefault
     # -- KueueViz frontend container securityContext
-    containerSecurityContext: {}
+    containerSecurityContext:
+      readOnlyRootFilesystem: true
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
     # -- Environment variables for KueueViz frontend deployment
     env: []
     ingress:
@@ -326,13 +348,15 @@ kueueViz:
       ingressClassName:
       # -- KueueViz dashboard frontend ingress host
       host: "frontend.kueueviz.local"
+      # -- If true, enable KueueViz dashboard frontend ingress tls. Defaults to true if tlsSecretName is set.
+      tlsEnabled: ~
       # -- KueueViz dashboard frontend ingress tls secret name
       tlsSecretName: "kueueviz-frontend-tls"
     image:
       # -- KueueViz dashboard frontend image repository
       repository: "us-central1-docker.pkg.dev/k8s-staging-images/kueue/kueueviz-frontend"
       # -- KueueViz dashboard frontend image tag
-      tag: release-0.18
+      tag: release-0.19
       # -- KueueViz dashboard frontend image pullPolicy.
       # This should be set to 'IfNotPresent' for released version
       pullPolicy: Always
