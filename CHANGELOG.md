@@ -7,8 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Reconcile `helm/kueue/values.yaml` with the upstream `v0.19.1` values contract:
+  `enableVisibilityAuthReaderRoleBinding` (default `true`, preserving the previous
+  unconditional RoleBinding), `controllerManager.strategy`/`hostNetwork`/`dnsPolicy`,
+  and `kueueViz.{backend,frontend}.ingress.tlsEnabled`.
+- Adopt upstream's hardened `kueueViz.frontend` pod and container `securityContext`
+  defaults (previously empty), matching the KueueViz backend.
+
 ### Changed
 
+- Bump upstream Kueue chart from `v0.18.2` to `v0.19.1`, and `appVersion` to match
+  (`gsoci.azurecr.io/giantswarm/kueue:v0.19.1` is mirrored and digest-identical to
+  `registry.k8s.io/kueue/kueue:v0.19.1`).
+- Bump the KueueViz backend/frontend image tags from `release-0.18` to `release-0.19`.
 - Regenerate `.github/workflows/zz_generated.*.yaml` via devctl to use the centralized reusable workflow, removing the Node-20 `mindsers/changelog-reader-action` dependency.
 
 ## [0.2.0] - 2026-05-18
