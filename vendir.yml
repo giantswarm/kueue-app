@@ -24,7 +24,7 @@ directories:
     git:
       url: https://github.com/kubernetes-sigs/kueue
       # Pinned to a specific upstream tag; bump this ref to upgrade.
-      ref: v0.19.1
+      ref: v0.19.3
     includePaths:
     - charts/kueue/templates/**/*
     # Make the templates directory the new root
@@ -36,7 +36,7 @@ directories:
   - path: .
     git:
       url: https://github.com/kubernetes-sigs/kueue
-      ref: v0.19.1
+      ref: v0.19.3
     includePaths:
     - charts/kueue/tests/**/*
     newRootPath: charts/kueue/tests
@@ -48,7 +48,7 @@ directories:
   - path: .
     git:
       url: https://github.com/kubernetes-sigs/kueue
-      ref: v0.19.1
+      ref: v0.19.3
     includePaths:
     - charts/kueue/**/*
     - docs/**/*
