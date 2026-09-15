@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Reconcile `helm/kueue/values.yaml` with the upstream `v0.19.4` values contract: `enableMutatingAdmissionPolicy` (default `false`; the underlying MutatingAdmissionPolicy requires Kubernetes 1.36+).
+
+### Changed
+
+- Sync upstream Kueue chart to `v0.19.4` (was `v0.19.1`).
+
 ## [0.3.0] - 2026-08-20
 
 ### Added

@@ -2,26 +2,26 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Prepare release v0.19.1 (#14302)
-      sha: df3d3656004f7b2478004a37b34ad8efa9ffabf0
+      commitTitle: Prepare release v0.19.4 (#15409)
+      sha: 5d738f203bd0d301d4966282b144f01d5bb32437
       tags:
-      - v0.19.1
+      - v0.19.4
     path: .
   path: helm/kueue/templates
 - contents:
   - git:
-      commitTitle: Prepare release v0.19.1 (#14302)
-      sha: df3d3656004f7b2478004a37b34ad8efa9ffabf0
+      commitTitle: Prepare release v0.19.4 (#15409)
+      sha: 5d738f203bd0d301d4966282b144f01d5bb32437
       tags:
-      - v0.19.1
+      - v0.19.4
     path: .
   path: helm/kueue/tests
 - contents:
   - git:
-      commitTitle: Prepare release v0.19.1 (#14302)
-      sha: df3d3656004f7b2478004a37b34ad8efa9ffabf0
+      commitTitle: Prepare release v0.19.4 (#15409)
+      sha: 5d738f203bd0d301d4966282b144f01d5bb32437
       tags:
-      - v0.19.1
+      - v0.19.4
     path: .
   path: upstream
 kind: LockConfig
