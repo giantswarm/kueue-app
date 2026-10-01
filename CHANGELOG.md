@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Reconcile `helm/kueue/values.yaml` with the upstream `v0.19.6` values contract: the
+  `kueueViz.ingress.*` block for upstream's new single path-routed ingress, and the
+  `Cohort.kueue.x-k8s.io` reconciler concurrency (set to `1`, in line with the other low-churn
+  kinds).
+- Upstream adds editor and viewer ClusterRoles for `AdmissionCheck`, `AppWrapper`,
+  `MultiKueueCluster`, `MultiKueueConfig`, `ProvisioningRequestConfig` and
+  `WorkloadPriorityClass`.
+
+### Changed
+
+- Sync upstream Kueue chart to `v0.19.6` (was `v0.19.4`), and `appVersion` to match.
+
 ## [0.4.0] - 2026-10-01
 
 ### Added
