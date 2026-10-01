@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Sync upstream Kueue chart to `v0.19.4` (was `v0.19.1`).
+- CI: set `override_app_version: false` on the catalog job. The chart derives the controller image
+  tag from `appVersion`, so letting app-build-suite stamp it with the build version made branch
+  builds reference a `gsoci.azurecr.io/giantswarm/kueue` tag that was never published.
 
 ### Fixed
 
