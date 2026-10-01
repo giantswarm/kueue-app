@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-01
+
 ### Added
 
 - Reconcile `helm/kueue/values.yaml` with the upstream `v0.19.4` values contract: `enableMutatingAdmissionPolicy` (default `false`; the underlying MutatingAdmissionPolicy requires Kubernetes 1.36+).
@@ -87,6 +89,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - changed: `app.giantswarm.io` label group was changed to `application.giantswarm.io`
 
 [Unreleased]: https://github.com/giantswarm/kueue-app/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/giantswarm/kueue-app/compare/v0.3.0...v0.3.0
 [0.3.0]: https://github.com/giantswarm/kueue-app/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/giantswarm/kueue-app/compare/v0.2.0...v0.2.0
 [0.2.0]: https://github.com/giantswarm/kueue-app/compare/v0.2.0...v0.2.0
