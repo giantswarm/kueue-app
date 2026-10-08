@@ -1,6 +1,6 @@
 # kueue
 
-![Version: 0.19.6](https://img.shields.io/badge/Version-0.19.6-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.19.6](https://img.shields.io/badge/AppVersion-v0.19.6-informational?style=flat-square)
+![Version: 0.20.1](https://img.shields.io/badge/Version-0.20.1-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v0.20.1](https://img.shields.io/badge/AppVersion-v0.20.1-informational?style=flat-square)
 
 Kueue is a set of APIs and controllers for job queueing. It is a job-level manager that decides when a job should be admitted to start (as in pods can be created) and when it should stop (as in active pods should be deleted).
 
@@ -28,7 +28,7 @@ $ helm install kueue kueue/ --create-namespace --namespace kueue-system
 Or use the charts pushed to `oci://registry.k8s.io/kueue/charts/kueue`:
 
 ```bash
-helm install kueue oci://registry.k8s.io/kueue/charts/kueue --version="0.19.6" --create-namespace --namespace=kueue-system
+helm install kueue oci://registry.k8s.io/kueue/charts/kueue --version="0.20.1" --create-namespace --namespace=kueue-system
 ```
 
 For more advanced parametrization of Kueue, we recommend using a local overrides file, passed via the `--values` flag. For example:
@@ -50,7 +50,7 @@ controllerManager:
 ```
 
 ```bash
-helm install kueue oci://registry.k8s.io/kueue/charts/kueue --version="0.19.6" \
+helm install kueue oci://registry.k8s.io/kueue/charts/kueue --version="0.20.1" \
   --create-namespace --namespace=kueue-system \
   --values overrides.yaml
 ```
@@ -58,7 +58,7 @@ helm install kueue oci://registry.k8s.io/kueue/charts/kueue --version="0.19.6" \
 You can also use the `--set` flag. For example, to enable a feature gate (e.g., `TopologyAwareScheduling`):
 
 ```bash
-helm install kueue oci://registry.k8s.io/kueue/charts/kueue --version="0.19.6" \
+helm install kueue oci://registry.k8s.io/kueue/charts/kueue --version="0.20.1" \
   --create-namespace --namespace=kueue-system \
   --set "controllerManager.featureGates[0].name=TopologyAwareScheduling" \
   --set "controllerManager.featureGates[0].enabled=true"
@@ -112,6 +112,7 @@ The following table lists the configurable parameters of the kueue chart and the
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | certManager.issuerRef | object | `{}` | Override the default self-signed cert-manager issuer reference. When set, the chart skips creating its own Issuer and uses this reference for webhook, metrics, and visibility certificates. The referenced issuer must provide the CA data required by Kueue's cert-manager integration. |
+| controllerManager.affinity | object | `{}` | ControllerManager's affinity |
 | controllerManager.dnsPolicy | string | `""` | ControllerManager pod's dnsPolicy. Set to ClusterFirstWithHostNet when hostNetwork is enabled. |
 | controllerManager.featureGates | list | `[]` | ControllerManager's feature gates |
 | controllerManager.hostNetwork | bool | `false` | Run the ControllerManager pod on the host network. Needed where the API server reaches the webhook/visibility endpoints via node IPs rather than pod IPs. |
@@ -124,7 +125,7 @@ The following table lists the configurable parameters of the kueue chart and the
 | controllerManager.manager.containerSecurityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true}` | ControllerManager's container securityContext |
 | controllerManager.manager.image.pullPolicy | string | `"Always"` | ControllerManager's image pullPolicy. This should be set to 'IfNotPresent' for released version |
 | controllerManager.manager.image.repository | string | `"us-central1-docker.pkg.dev/k8s-staging-images/kueue/kueue"` | ControllerManager's image repository |
-| controllerManager.manager.image.tag | string | `"release-0.19"` | ControllerManager's image tag |
+| controllerManager.manager.image.tag | string | `"release-0.20"` | ControllerManager's image tag |
 | controllerManager.manager.logLevel | int | `2` | Zap log level. Higher values increase verbosity. |
 | controllerManager.manager.podAnnotations | object | `{}` |  |
 | controllerManager.manager.podSecurityContext | object | `{"runAsNonRoot":true,"seccompProfile":{"type":"RuntimeDefault"}}` | ControllerManager's pod securityContext |
@@ -142,6 +143,7 @@ The following table lists the configurable parameters of the kueue chart and the
 | controllerManager.strategy | object | `{}` | ControllerManager Deployment's update strategy. When hostNetwork is enabled the manager's ports bind to the node, so the default RollingUpdate surge cannot schedule a second pod onto an already-occupied node; set maxSurge: 0 to roll in place. |
 | controllerManager.tolerations | list | `[]` | ControllerManager's tolerations |
 | controllerManager.topologySpreadConstraints | list | `[]` | ControllerManager's topologySpreadConstraints |
+| enableAlphaAPIs | bool | `false` | Enable Alpha APIs (e.g. DynamicQuotaOrchestrator, CapacityProvider) |
 | enableCertManager | bool | `false` | Enable x509 automated certificate management using cert-manager (cert-manager.io) |
 | enableKueueViz | bool | `false` | Enable KueueViz dashboard |
 | enableMutatingAdmissionPolicy | bool | `false` | Enable MutatingAdmissionPolicy for clearing nominatedClusterNames on admission or eviction (requires K8s 1.36+) |
@@ -159,7 +161,7 @@ The following table lists the configurable parameters of the kueue chart and the
 | kueueViz.backend.env | list | `[{"name":"KUEUEVIZ_ALLOWED_ORIGINS","value":"https://frontend.kueueviz.local"}]` | Environment variables for KueueViz backend deployment |
 | kueueViz.backend.image.pullPolicy | string | `"Always"` | KueueViz dashboard backend image pullPolicy. This should be set to 'IfNotPresent' for released version |
 | kueueViz.backend.image.repository | string | `"us-central1-docker.pkg.dev/k8s-staging-images/kueue/kueueviz-backend"` | KueueViz dashboard backend image repository |
-| kueueViz.backend.image.tag | string | `"release-0.19"` | KueueViz dashboard backend image tag |
+| kueueViz.backend.image.tag | string | `"release-0.20"` | KueueViz dashboard backend image tag |
 | kueueViz.backend.imagePullSecrets | list | `[]` | Sets ImagePullSecrets for KueueViz dashboard backend deployments. This is useful when the images are in a private registry. |
 | kueueViz.backend.ingress.annotations | object | `{"nginx.ingress.kubernetes.io/rewrite-target":"/","nginx.ingress.kubernetes.io/ssl-redirect":"true"}` | KueueViz dashboard backend ingress annotations |
 | kueueViz.backend.ingress.enabled | bool | `true` | Enable KueueViz dashboard backend ingress |
@@ -176,7 +178,7 @@ The following table lists the configurable parameters of the kueue chart and the
 | kueueViz.frontend.env | list | `[]` | Environment variables for KueueViz frontend deployment |
 | kueueViz.frontend.image.pullPolicy | string | `"Always"` | KueueViz dashboard frontend image pullPolicy. This should be set to 'IfNotPresent' for released version |
 | kueueViz.frontend.image.repository | string | `"us-central1-docker.pkg.dev/k8s-staging-images/kueue/kueueviz-frontend"` | KueueViz dashboard frontend image repository |
-| kueueViz.frontend.image.tag | string | `"release-0.19"` | KueueViz dashboard frontend image tag |
+| kueueViz.frontend.image.tag | string | `"release-0.20"` | KueueViz dashboard frontend image tag |
 | kueueViz.frontend.imagePullSecrets | list | `[]` | Sets ImagePullSecrets for KueueViz dashboard frontend deployments. This is useful when the images are in a private registry. |
 | kueueViz.frontend.ingress.annotations | object | `{"nginx.ingress.kubernetes.io/rewrite-target":"/","nginx.ingress.kubernetes.io/ssl-redirect":"true"}` | KueueViz dashboard frontend ingress annotations |
 | kueueViz.frontend.ingress.enabled | bool | `true` | Enable KueueViz dashboard frontend ingress |
@@ -197,7 +199,7 @@ The following table lists the configurable parameters of the kueue chart and the
 | kueueViz.ingress.tlsSecretName | string | `""` | Path-routed ingress tls secret name |
 | managerConfig.controllerManagerConfigYaml | string | controllerManagerConfigYaml | controller_manager_config.yaml. ControllerManager utilizes this yaml via manager-config Configmap. |
 | metrics.prometheusNamespace | string | `"monitoring"` | Prometheus namespace |
-| metrics.serviceMonitor.tlsConfig | object | `{"insecureSkipVerify":true}` | ServiceMonitor's tlsConfig |
+| metrics.serviceMonitor.tlsConfig | object | `{}` | ServiceMonitor's tlsConfig. When empty, the chart verifies the metrics certificate issued by cert-manager if `enableCertManager` is true, and skips verification otherwise. When set, it replaces the generated tlsConfig, and `insecureSkipVerify` defaults to true unless set explicitly. |
 | metricsService.annotations | object | `{}` | metricsService's annotations |
 | metricsService.labels | object | `{}` | metricsService's labels |
 | metricsService.ports | list | `[{"name":"https","port":8443,"protocol":"TCP","targetPort":8443}]` | metricsService's ports |
